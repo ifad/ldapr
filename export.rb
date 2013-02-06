@@ -21,11 +21,17 @@ module Export
   def csv(people)
     attributes = %w( dn ) + LDAP::Person.export_attributes - %w( thumbnailPhoto memberOf )
 
-    CSV.generate do |csv|
+    CSV.generate :encoding => 'utf-8' do |csv|
       csv << attributes
 
       people.each do |p|
-        csv << attributes.map {|a| p.public_send(a)}
+        values = attributes.map do |attr|
+          value = p.public_send(attr)
+          value.respond_to?(:force_encoding) ?
+            value.dup.force_encoding('utf-8') : value
+        end
+
+        csv << values
       end
     end
   end
