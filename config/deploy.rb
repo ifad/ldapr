@@ -51,7 +51,7 @@ namespace :deploy do
     configs = %w( ldap.yml ).map {|c| [shared_path, 'config', c].join('/') }
     run "ln -s #{configs.join(' ')} #{release_path}/config"
   end
-  after "deploy:update_code", "deploy:db:symlink"
+  after "deploy:update_code", "deploy:symlink"
 
 end
 
