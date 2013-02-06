@@ -147,18 +147,29 @@ module LDAP
 
     def [](name)
       value = attributes.fetch(name)
-      (value.size == 1 ? value.first.to_s : value).tap do |v|
+      (value.size < 2 ? value.first.to_s : value).tap do |v|
         if self.class.utf8_convert_attributes.include?(name)
           v.force_encoding('utf-8')
         end
       end
     end
 
-    def to_hash
-      (self.class.attributes + %w(active? extension expiration)).inject({}) do |h, attr|
+    def to_hash(attrs = nil)
+      (attrs || default_export_attributes).inject({}) do |h, attr|
         value = self.respond_to?(attr) ? self.public_send(attr) : self[attr]
         h.update(attr => value)
       end
+    end
+
+    def as_json(options)
+      return to_hash if options.blank?
+
+      options.symbolize_keys!
+      attrs = default_export_attributes
+      attrs &= Array.wrap(options[:only]).map(&:to_s)   if options.key?(:only)
+      attrs -= Array.wrap(options[:except]).map(&:to_s) if options.key?(:except)
+
+      to_hash(attrs)
     end
 
     protected
@@ -166,6 +177,10 @@ module LDAP
       self[name.to_s]
     rescue KeyError
       super
+    end
+
+    def default_export_attributes
+      self.class.attributes + %w(active? extension expiration)
     end
 
   end
