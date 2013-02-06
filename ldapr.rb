@@ -19,10 +19,12 @@ use OmniAuth::Builder do
 end
 
 get ROOT do
-  unless session[:user]
+  if session[:user].blank?
     redirect "#{ROOT}/cas"
+  elsif params.empty?
+    erb :index
   else
-    'TODO'
+    export!
   end
 end
 

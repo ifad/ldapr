@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>LDAPr: the missing LDAP query tool</title>
+  </head>
+  <body>
+    <h1>LDAPr: the missing LDAP query tool</h1>
+
+    <p>This tool contains a list of pre-canned queries to run against LDAP.</p>
+    <p>It always yields a CSV file with the people results.</p>
+    <p>The query arguments can be changed easily by altering the query string, composing parameters together.</p>
+
+    <h2>Some examples:</h2>
+
+    <ul>
+      <li><a href="?active=true">All active users</a></li>
+      <li><a href="?active=any">All users, regardless of their active status</a></li>
+      <li><a href="?active=false">Inactive users</a></li>
+
+      <li><a href="?otherMailbox=">Active users with no other mailbox</a></li>
+      <li><a href="?otherMobile=*">Active users with an other mobile set</a></li>
+
+      <li><a href="?division=sec">Active users in the SEC division</a></li>
+      <li><a href="?division=ict&active=false">Inactive users in the ICT division</a></li>
+
+      <li><a href="?displayName=*Amed*">Active users containing "Amed" in their display name</a></li>
+      <li><a href="?employeeID=F62998&active=any">The employee ID F62998</a></li>
+
+      <li><a href="?telephoneNumber=*2047">The user having extension 2047</a></li>
+      <li><a href="?employeeType=COL">Active consultants</a></li>
+
+      <li><a href="?employeeType=COL&division=SEC&otherMailbox=&otherMobile=*">Active consultants in SEC having no otherMailbox but an otherMobile</a></li>
+    </ul>
+
+    <p>Have fun, and use responsibly :-)</p>
+  </body>
+</html>
