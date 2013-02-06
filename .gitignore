@@ -1,0 +1,9 @@
+.DS_Store
+log/*
+log/**/*
+tmp/**/*
+bin/*
+config/ldap.yml
+vendor/gems/*
+!vendor/gems/cache/
+.sass-cache/*

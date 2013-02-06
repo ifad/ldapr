@@ -1,0 +1,11 @@
+development:
+  hostname: ifsdc2.ifad.org
+  port:     389
+  username: "IFADORG\\SERVICE.ACCOUNT"
+  password: "PASSWORD"
+
+  base: 'dc=IFAD,dc=ORG'
+
+  branches:
+    - 'ou=People,dc=IFAD,dc=ORG'
+    - 'ou=People-NALO,ou=People,dc=IFAD,dc=ORG'
