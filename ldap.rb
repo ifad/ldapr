@@ -51,7 +51,7 @@ module LDAP
       telephoneNumber
       roomNumber
       thumbnailPhoto
-      othermobile
+      otherMobile
       memberOf
       division
       employeeType
@@ -72,6 +72,11 @@ module LDAP
     def self.utf8_convert_attributes
       UTF8_ATTRIBUTES
     end
+
+    def self.export_attributes
+      @export_attributes ||= attributes + %w(active? extension expiration)
+    end
+
 
     def self.phone_prefix
       '+39065459'
@@ -129,7 +134,7 @@ module LDAP
     attr_reader :attributes, :dn
 
     def memberOf
-      self['memberOf'].map(&:upcase)
+      attributes.fetch('memberOf').map(&:upcase)
     end
 
     def extension
@@ -142,7 +147,7 @@ module LDAP
     end
 
     def expiration
-      LDAP.at(self['accountExpires']).to_date
+      LDAP.at(self['accountExpires'])
     end
 
     def [](name)
@@ -155,7 +160,7 @@ module LDAP
     end
 
     def to_hash(attrs = nil)
-      (attrs || default_export_attributes).inject({'dn' => dn}) do |h, attr|
+      (attrs || self.class.export_attributes).inject({'dn' => dn}) do |h, attr|
         value = self.respond_to?(attr) ? self.public_send(attr) : self[attr]
         h.update(attr => value)
       end
@@ -165,7 +170,7 @@ module LDAP
       return to_hash if options.blank?
 
       options.symbolize_keys!
-      attrs = default_export_attributes
+      attrs = self.class.export_attributes
       attrs &= Array.wrap(options[:only]).map(&:to_s)   if options.key?(:only)
       attrs -= Array.wrap(options[:except]).map(&:to_s) if options.key?(:except)
 
@@ -177,10 +182,6 @@ module LDAP
       self[name.to_s]
     rescue KeyError
       super
-    end
-
-    def default_export_attributes
-      self.class.attributes + %w(active? extension expiration)
     end
 
   end

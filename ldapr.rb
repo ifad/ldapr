@@ -20,13 +20,24 @@ use OmniAuth::Builder do
   configure {|c| c.path_prefix = ROOT}
 end
 
-get ROOT do
+get "#{ROOT}.?:format?" do
   if session[:user].blank?
     redirect "#{ROOT}/cas"
   elsif params.empty?
     erb :index
   else
-    Export.process(params)
+    params.delete('splat')
+    params.delete('captures')
+    format = params.delete('format') || 'csv'
+
+    result, type, disposition = Export.process(params, format)
+
+    halt 400, 'Invalid format' if result.blank?
+
+    headers \
+      'Content-Type' => type,
+      'Content-Disposition' => "#{disposition}; filename=\"ldapr-export-#{Time.now.strftime('%Y%m%d-%H%I')}.#{format}"
+    body result
   end
 end
 
@@ -42,6 +53,5 @@ get "#{ROOT}/logout" do
 end
 
 get "#{ROOT}/failure" do
-  halt 403
-  'Unauthorized'
+  halt 403, 'Unauthorized'
 end
