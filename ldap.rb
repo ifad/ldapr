@@ -36,13 +36,16 @@ module LDAP
     Time.at(timestamp.to_i / 10_000_000 - AD_EPOCH_OFFSET)
   end
 
-
   class Person
-    ATTRIBUTES = %w(
-      sAMAccountName
-      accountExpires
+    UTF8_ATTRIBUTES = %w(
       givenName
       sn
+      displayName
+    ).freeze
+
+    ATTRIBUTES = UTF8_ATTRIBUTES + %w(
+      sAMAccountName
+      accountExpires
       mail
       otherMailbox
       telephoneNumber
@@ -52,7 +55,7 @@ module LDAP
       memberOf
       division
       employeeType
-    )
+    ).freeze
 
     def self.base_dn
       'ou=People,dc=IFAD,dc=ORG'
@@ -64,6 +67,10 @@ module LDAP
 
     def self.attributes
       ATTRIBUTES
+    end
+
+    def self.utf8_convert_attributes
+      UTF8_ATTRIBUTES
     end
 
     def self.phone_prefix
@@ -114,11 +121,12 @@ module LDAP
     end
 
     def initialize(entry)
+      @dn = entry.dn.dup.tap(&:freeze)
       @attributes = self.class.attributes.inject({}) do |h, attr|
         h.update(attr => entry[attr].reject(&:blank?))
       end.freeze
     end
-    attr_reader :attributes
+    attr_reader :attributes, :dn
 
     def memberOf
       self['memberOf'].map(&:upcase)
@@ -139,7 +147,18 @@ module LDAP
 
     def [](name)
       value = attributes.fetch(name)
-      value.size == 1 ? value.first.to_s.force_encoding('utf-8') : value
+      (value.size == 1 ? value.first.to_s : value).tap do |v|
+        if self.class.utf8_convert_attributes.include?(name)
+          v.force_encoding('utf-8')
+        end
+      end
+    end
+
+    def to_hash
+      (self.class.attributes + %w(active? extension expiration)).inject({}) do |h, attr|
+        value = self.respond_to?(attr) ? self.public_send(attr) : self[attr]
+        h.update(attr => value)
+      end
     end
 
     protected
