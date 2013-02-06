@@ -5,6 +5,7 @@ gem 'omniauth'
 gem 'omniauth-cas'
 gem 'net-ldap', '0.2.2'
 gem 'active_support'
+gem 'i18n', :require => false
 
 group :development do
   gem 'debugger'

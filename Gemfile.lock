@@ -23,6 +23,7 @@ GEM
     debugger-ruby_core_source (1.1.7)
     hashie (1.2.0)
     highline (1.6.15)
+    i18n (0.6.1)
     jruby-pageant (1.1.1)
     kgio (2.7.4)
     net-ldap (0.2.2)
@@ -64,6 +65,7 @@ DEPENDENCIES
   capistrano
   capistrano-ext
   debugger
+  i18n
   net-ldap (= 0.2.2)
   omniauth
   omniauth-cas
