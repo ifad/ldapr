@@ -155,7 +155,7 @@ module LDAP
     end
 
     def to_hash(attrs = nil)
-      (attrs || default_export_attributes).inject({}) do |h, attr|
+      (attrs || default_export_attributes).inject({'dn' => dn}) do |h, attr|
         value = self.respond_to?(attr) ? self.public_send(attr) : self[attr]
         h.update(attr => value)
       end
