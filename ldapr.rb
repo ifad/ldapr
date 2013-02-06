@@ -9,6 +9,8 @@ require 'json'
 require 'bundler/setup'
 Bundler.require
 
+require './export'
+
 ROOT = ENV['RAILS_RELATIVE_URL_ROOT'] || '/l'
 
 use Rack::Session::Cookie, :expire_after => 300
@@ -24,7 +26,7 @@ get ROOT do
   elsif params.empty?
     erb :index
   else
-    export!
+    Export.process(params)
   end
 end
 
@@ -38,7 +40,6 @@ end
 get "#{ROOT}/logout" do
   session[:user] = nil
 end
-
 
 get "#{ROOT}/failure" do
   halt 403
