@@ -13,30 +13,43 @@ require './export'
 
 ROOT = ENV['RAILS_RELATIVE_URL_ROOT'] || '/l'
 
-use Rack::Session::Cookie, :expire_after => 300
+use Rack::Session::Cookie, :expire_after => 300, :path => ROOT
 
 use OmniAuth::Builder do
   provider :cas, host: 'cas.ifad.org'
   configure {|c| c.path_prefix = ROOT}
 end
 
+helpers do
+  def get_query
+    format = params['format'] || 'csv'
+    query  = params.inject({}) do |h, (k,v)|
+      %w( splat captures format ).include?(k) ? h : h.update(k => v)
+    end
+
+    [query, format]
+  end
+end
+
 get "#{ROOT}.?:format?" do
   if session[:user].blank?
+    session[:query] = get_query
     redirect "#{ROOT}/cas"
-  elsif params.empty?
-    erb :index
-  else
-    params.delete('splat')
-    params.delete('captures')
-    format = params.delete('format') || 'csv'
+  end
 
-    result, type, disposition = Export.process(params, format)
+  query, format = session.delete(:query) || get_query
+  if query.empty?
+    erb :index
+
+  else
+    result, type, disposition = Export.process(query, format)
 
     halt 400, 'Invalid format' if result.blank?
 
+    filename = "#{Time.now.strftime('%Y%m%d-%H%I')}.#{format}"
     headers \
       'Content-Type' => type,
-      'Content-Disposition' => "#{disposition}; filename=\"ldapr-export-#{Time.now.strftime('%Y%m%d-%H%I')}.#{format}"
+      'Content-Disposition' => "#{disposition}; filename=\"ldapr-export-#{filename}"
     body result
   end
 end
