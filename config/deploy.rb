@@ -47,17 +47,16 @@ namespace :deploy do
   end
 
   desc "[internal] Updates the symlink for database configuration files to the just deployed release."
-  task :symlink do
+  task :symlink_config do
     configs = %w( ldap.yml ).map {|c| [shared_path, 'config', c].join('/') }
     run "ln -s #{configs.join(' ')} #{release_path}/config"
   end
-  after "deploy:update_code", "deploy:symlink"
 
 end
 
 after 'deploy', 'deploy:cleanup'
+after 'deploy:update_code', 'deploy:symlink_config'
 
 require 'bundler/capistrano'
 set :bundle_flags, "--deployment --quiet --binstubs #{deploy_to}/bin"
 set :rake,         'bundle exec rake'
-after 'deploy', 'deploy:cleanup'
