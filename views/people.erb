@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>LDAPr: People export</title>
+  </head>
+
+  <body>
+    <h1>People export</h1>
+
+    <h2>Query details</h2>
+    <ul>
+      <li><strong>Base</strong>: <%= people.base.map {|dn| "<code>#{dn}</code>"}.join('; ') %></li>
+      <li><strong>Scope</strong>: <code><%= people.scope %></code></li>
+      <li><strong>Filter</strong>: <code><%= people.filter %></code></li>
+    </ul>
+
+    <h2>Other Formats</h2>
+    <ul>
+      <li><a href="<%= request.path %>.csv?<%= request.query_string %>">CSV</a></li>
+      <li><a href="<%= request.path %>.json?<%= request.query_string %>">JSON</a></li>
+    </ul>
+
+    <p><a href="<%= request.path %>">New query</a></p>
+
+    <table border="1">
+      <tr>
+        <% attributes.each do |attr| %>
+          <th><%= attr %></th>
+        <% end %>
+      </tr>
+
+      <% people.each do |person| %>
+        <tr>
+          <% attributes.each do |attr| %>
+            <td><%= person.public_send(attr) %></td>
+          <% end %>
+        </tr>
+      <% end %>
+  </body>
+</html>

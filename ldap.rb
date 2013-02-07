@@ -128,22 +128,26 @@ module LDAP
     def self.search(options)
       options = options.symbolize_keys
 
-      scope = options.delete(:scope) == :single ?
-        Net::LDAP::SearchScope_SingleLevel :
-        Net::LDAP::SearchScope_WholeSubtree
+      scope = options.delete(:scope) == :sub ?
+        Net::LDAP::SearchScope_WholeSubtree  :
+        Net::LDAP::SearchScope_SingleLevel
 
       filter = filter_for(options)
 
-      entries = branches.inject([]) do |result, dn|
+      result = Result.new(filter: filter, base: branches, scope: scope)
+
+      branches.each do |dn|
         result.concat LDAP.connection.search(
           base:       dn,
           filter:     filter,
           attributes: attributes,
           scope:      scope
-        )
+        ).map! {|entry| new(entry)}
       end
 
-      entries.map! {|entry| new(entry)}.compact
+      result.compact!
+
+      return result.freeze
     end
 
     def initialize(entry)

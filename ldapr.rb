@@ -10,6 +10,7 @@ require 'bundler/setup'
 Bundler.require
 
 require './export'
+require './ldap'
 
 ROOT = ENV['RAILS_RELATIVE_URL_ROOT'] || '/l'
 
@@ -29,7 +30,7 @@ get "#{ROOT}.?:format?" do
     redirect "#{ROOT}/cas"
   end
 
-  format = params['format'] || 'csv'
+  format = params['format'] || 'html'
   query  = params.inject({}) do |h, (k,v)|
     v = %w( no false ).include?(v) ? false : v
     %w( splat captures format ).include?(k) ? h : h.update(k => v)
@@ -39,7 +40,8 @@ get "#{ROOT}.?:format?" do
     erb :index
 
   else
-    result, type, disposition = Export.process(query, format)
+    people = LDAP::Person.search(query)
+    result, type, disposition = Export.new(people, self).process(format)
 
     halt 400, 'Invalid format' if result.blank?
 
