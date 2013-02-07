@@ -30,6 +30,7 @@ get "#{ROOT}.?:format?" do
 
   format = params['format'] || 'csv'
   query  = params.inject({}) do |h, (k,v)|
+    v = %w( no false ).include?(v) ? false : v
     %w( splat captures format ).include?(k) ? h : h.update(k => v)
   end
 
