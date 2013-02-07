@@ -20,24 +20,19 @@ use OmniAuth::Builder do
   configure {|c| c.path_prefix = ROOT}
 end
 
-helpers do
-  def get_query
-    format = params['format'] || 'csv'
-    query  = params.inject({}) do |h, (k,v)|
-      %w( splat captures format ).include?(k) ? h : h.update(k => v)
-    end
-
-    [query, format]
-  end
-end
-
 get "#{ROOT}.?:format?" do
   if session[:user].blank?
-    session[:query] = get_query
+    if request.query_string.present?
+      session[:req] = request.fullpath
+    end
     redirect "#{ROOT}/cas"
   end
 
-  query, format = session.delete(:query) || get_query
+  format = params['format'] || 'csv'
+  query  = params.inject({}) do |h, (k,v)|
+    %w( splat captures format ).include?(k) ? h : h.update(k => v)
+  end
+
   if query.empty?
     erb :index
 
@@ -58,7 +53,7 @@ get "#{ROOT}/cas/callback" do
   auth = request.env['omniauth.auth']
 
   session[:user] = auth.uid
-  redirect ROOT
+  redirect session.delete(:req) || ROOT
 end
 
 get "#{ROOT}/logout" do
