@@ -107,7 +107,7 @@ module LDAP
       filter = case options.delete(:active)
       when false
         Net::LDAP::Filter.le('accountExpires', LDAP.now.to_s)
-      when :any
+      when :any, 'any'
         Net::LDAP::Filter.eq('accountExpires', '*')
       else
         Net::LDAP::Filter.ge('accountExpires', LDAP.now.to_s)
