@@ -36,25 +36,46 @@ module LDAP
     Time.at(timestamp.to_i / 10_000_000 - AD_EPOCH_OFFSET)
   end
 
+  class Result < Array
+    def initialize(*args)
+      if args.first.respond_to?(:key?)
+        options = args.shift
+        @filter, @scope, @base =
+          options.values_at(:filter, :scope, :base)
+      end
+      super
+    end
+
+    attr_reader :filter, :base
+
+    def scope
+      case @scope
+      when Net::LDAP::SearchScope_BaseObject   then :base
+      when Net::LDAP::SearchScope_SingleLevel  then :single
+      when Net::LDAP::SearchScope_WholeSubtree then :subtree
+      end
+    end
+  end
+
   class Person
     UTF8_ATTRIBUTES = %w(
       givenName
       sn
       displayName
-    ).freeze
-
-    ATTRIBUTES = UTF8_ATTRIBUTES + %w(
       sAMAccountName
       accountExpires
       mail
       otherMailbox
       telephoneNumber
       roomNumber
-      thumbnailPhoto
       otherMobile
-      memberOf
       division
       employeeType
+    ).freeze
+
+    ATTRIBUTES = UTF8_ATTRIBUTES + %w(
+      thumbnailPhoto
+      memberOf
     ).freeze
 
     def self.base_dn
@@ -126,7 +147,7 @@ module LDAP
     end
 
     def initialize(entry)
-      @dn = entry.dn.dup.tap(&:freeze)
+      @dn = entry.dn.dup.force_encoding('utf-8').freeze
       @attributes = self.class.attributes.inject({}) do |h, attr|
         h.update(attr => entry[attr].reject(&:blank?))
       end.freeze

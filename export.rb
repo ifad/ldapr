@@ -25,13 +25,7 @@ module Export
       csv << attributes
 
       people.each do |p|
-        values = attributes.map do |attr|
-          value = p.public_send(attr)
-          value.respond_to?(:force_encoding) ?
-            value.dup.force_encoding('utf-8') : value
-        end
-
-        csv << values
+        csv << self.class.tabular_attributes.map {|attr| p.public_send(attr)}
       end
     end
   end
