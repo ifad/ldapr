@@ -13,7 +13,8 @@ require './export'
 
 ROOT = ENV['RAILS_RELATIVE_URL_ROOT'] || '/l'
 
-use Rack::Session::Cookie, :expire_after => 300, :name => '_ldapr_session'
+use Rack::Session::Cookie, :expire_after => 300,
+  :key => '_ldapr', :secret => '874fmajr39jf&*H#jfb1!@'
 
 use OmniAuth::Builder do
   provider :cas, host: 'cas.ifad.org'
