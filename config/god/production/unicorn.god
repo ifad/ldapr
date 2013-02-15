@@ -4,6 +4,6 @@ Ifad::God.unicorn do |w|
   w.gid = 'ruby'
   w.env = {
     'RAILS_RELATIVE_URL_ROOT' => '/l',
-    'RAILS_ENV' => 'staging'
+    'RAILS_ENV' => 'production'
   }
 end
