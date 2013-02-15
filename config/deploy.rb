@@ -30,6 +30,12 @@ ssh_options[:auth_methods]  = ['publickey']
 depend :remote, :command, 'gem'
 depend :remote, :command, 'git'
 
+def compile(template)
+  location = fetch(:template_dir, File.expand_path('../deploy', __FILE__)) + "/#{template}"
+  config   = ERB.new File.read(location)
+  config.result(binding)
+end
+
 namespace :deploy do
 
   namespace :ifad do
@@ -52,9 +58,15 @@ namespace :deploy do
     run "ln -s #{configs.join(' ')} #{release_path}/config"
   end
 
+  task :setup_config do
+    run "mkdir -p #{shared_path}/{db,config}"
+    put compile('ldap.yml.erb'),     "#{shared_path}/config/ldap.yml"
+  end
+
 end
 
 after 'deploy', 'deploy:cleanup'
+after 'deploy:setup', 'deploy:setup_config'
 after 'deploy:update_code', 'deploy:symlink_config'
 
 require 'bundler/capistrano'

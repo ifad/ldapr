@@ -1,0 +1,17 @@
+<%
+  ldap_hostname = Capistrano::CLI.ui.ask('LDAP hostname: ')
+  ldap_username = Capistrano::CLI.ui.ask('LDAP username: ')
+  ldap_password = Capistrano::CLI.ui.ask('LDAP password: ')
+%>
+
+<%= rails_env %>:
+  hostname: "<%= ldap_hostname %>"
+  port:     389
+  username: "<%= ldap_username %>"
+  password: "<%= ldap_password %>"
+
+  base: 'dc=IFAD,dc=ORG'
+
+  branches:
+    - 'ou=People,dc=IFAD,dc=ORG'
+    - 'ou=People-NALO,ou=People,dc=IFAD,dc=ORG'
