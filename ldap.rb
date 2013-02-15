@@ -14,8 +14,12 @@ module LDAP
     ]
   end
 
+  def self.environment
+    ENV['RACK_ENV'] || 'development'
+  end
+
   def self.config
-    @@config ||= YAML.load_file('config/ldap.yml').fetch(ENV['RACK_ENV'] || 'development')
+    @@config ||= YAML.load_file('config/ldap.yml').fetch(environment)
   end
 
   def self.connection

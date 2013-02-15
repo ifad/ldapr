@@ -46,9 +46,11 @@ get "#{ROOT}.?:format?" do
     halt 400, 'Invalid format' if result.blank?
 
     filename = "#{Time.now.strftime('%Y%m%d-%H%I')}.#{format}"
+    filename = "#{LDAP.environment}-ldapr-people-#{filename}"
+
     headers \
       'Content-Type' => type,
-      'Content-Disposition' => "#{disposition}; filename=\"ldapr-export-#{filename}"
+      'Content-Disposition' => "#{disposition}; filename=\"#{filename}\""
     body result
   end
 end
