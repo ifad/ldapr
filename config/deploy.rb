@@ -39,11 +39,11 @@ end
 namespace :deploy do
 
   namespace :ifad do
-    desc '[internal] Symlink rbenv version'
-    task :symlink_rbenv_version, :except => { :no_release => true } do
-      run "ln -s #{deploy_to}/.rbenv-version #{release_path}"
+    desc '[internal] Symlink ruby version'
+    task :symlink_ruby_version, :except => { :no_release => true } do
+      run "ln -s #{deploy_to}/.ruby-version #{release_path}"
     end
-    after 'deploy:update_code', 'deploy:ifad:symlink_rbenv_version'
+    after 'deploy:update_code', 'deploy:ifad:symlink_ruby_version'
   end
 
   desc 'Restarts the application.'
