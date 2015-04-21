@@ -83,11 +83,11 @@ module LDAP
     ).freeze
 
     def self.base_dn
-      'ou=People,dc=IFAD,dc=ORG'
+      @_base_dn ||= LDAP.config['base']
     end
 
     def self.branches
-      [ base_dn, 'ou=People-NALO,ou=People,dc=IFAD,dc=ORG' ]
+      @_branches ||= LDAP.config['branches']
     end
 
     def self.attributes
