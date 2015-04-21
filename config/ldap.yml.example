@@ -7,5 +7,4 @@ development:
   base: 'dc=IFAD,dc=ORG'
 
   branches:
-    - 'ou=People,dc=IFAD,dc=ORG'
-    - 'ou=People-NALO,ou=People,dc=IFAD,dc=ORG'
+    - 'dc=IFAD,dc=ORG'
