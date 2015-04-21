@@ -132,9 +132,9 @@ module LDAP
     def self.search(options)
       options = options.symbolize_keys
 
-      scope = options.delete(:scope) == :sub ?
-        Net::LDAP::SearchScope_WholeSubtree  :
-        Net::LDAP::SearchScope_SingleLevel
+      scope = options.delete(:scope) == :single ?
+        Net::LDAP::SearchScope_SingleLevel      :
+        Net::LDAP::SearchScope_WholeSubtree
 
       filter = filter_for(options)
 
