@@ -72,6 +72,7 @@ module LDAP
       otherMailbox
       telephoneNumber
       roomNumber
+      mobile
       otherMobile
       division
       employeeType
