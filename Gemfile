@@ -1,16 +1,18 @@
 source 'https://rubygems.org'
 
+ruby '2.1.10'
+
 gem 'sinatra'
 gem 'omniauth'
 gem 'omniauth-cas'
-gem 'net-ldap', '0.2.2'
-gem 'active_support'
+gem 'net-ldap'
+gem 'activesupport', '~> 3.0'
 gem 'i18n', :require => false
 
 group :development do
+  gem 'infrad', git: 'git@code.ifad.org:infrad.git'
   gem 'byebug'
-  gem 'capistrano', '~> 2.0'
-  gem 'capistrano-ext'
+  gem 'capistrano', '~> 2.15.9'
 end
 
 group :staging, :production do

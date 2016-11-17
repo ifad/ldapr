@@ -1,33 +1,38 @@
+GIT
+  remote: git@code.ifad.org:infrad.git
+  revision: 756eaf87cedf1ec61327affc8e8904a293d5304b
+  specs:
+    infrad (0.1.0)
+      capistrano
+      json
+
 GEM
   remote: https://rubygems.org/
   specs:
-    active_support (3.0.0)
-      activesupport (= 3.0.0)
     activesupport (3.0.0)
     addressable (2.3.2)
     byebug (2.5.0)
       columnize (~> 0.3.6)
       debugger-linecache (~> 1.2.0)
-    capistrano (2.15.5)
+    capistrano (2.15.9)
       highline
       net-scp (>= 1.0.0)
       net-sftp (>= 2.0.0)
       net-ssh (>= 2.0.14)
       net-ssh-gateway (>= 1.1.0)
-    capistrano-ext (1.2.1)
-      capistrano (>= 1.0.0)
     columnize (0.3.6)
     debugger-linecache (1.2.0)
     hashie (1.2.0)
-    highline (1.6.20)
+    highline (1.7.8)
     i18n (0.6.1)
+    json (2.0.2)
     kgio (2.7.4)
     net-ldap (0.2.2)
-    net-scp (1.1.2)
+    net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-sftp (2.1.2)
       net-ssh (>= 2.6.5)
-    net-ssh (2.7.0)
+    net-ssh (3.2.0)
     net-ssh-gateway (1.2.0)
       net-ssh (>= 2.6.5)
     nokogiri (1.5.5)
@@ -56,13 +61,19 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  active_support
+  activesupport (~> 3.0)
   byebug
-  capistrano (~> 2.0)
-  capistrano-ext
+  capistrano (~> 2.15.9)
   i18n
-  net-ldap (= 0.2.2)
+  infrad!
+  net-ldap
   omniauth
   omniauth-cas
   sinatra
   unicorn
+
+RUBY VERSION
+   ruby 2.1.10p492
+
+BUNDLED WITH
+   1.12.5

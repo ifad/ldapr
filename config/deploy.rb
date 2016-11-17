@@ -2,27 +2,13 @@
 # Global Settings
 # =========================================================================
 
-# Base settings
 set :application, 'ldapr'
 
-# Stages settings
-set :stages, %w( staging production )
+require 'infrad'
 
-require 'capistrano/ext/multistage'
+Infrad.deploy(self, app: application)
 
-# Repository settings
-set :repository,    'git@mine.ifad.org:ldapr.git'
-set :scm,           'git'
-set :branch,        fetch(:branch, 'master')
-set :deploy_via,    :remote_cache
-set :deploy_to,     "/home/rails/apps/#{application}"
-set :use_sudo,      false
-
-# Account settings
-set :user,          'ldapr'
-
-ssh_options[:forward_agent] = true
-ssh_options[:auth_methods]  = ['publickey']
+set(:rails_env) { stage }
 
 # =========================================================================
 # Dependencies
