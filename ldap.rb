@@ -119,7 +119,6 @@ module LDAP
       end
 
       filter &= Net::LDAP::Filter.eq('objectClass', 'person')
-      filter &= Net::LDAP::Filter.eq('sAMAccountName', '*.*')
 
       options.each do |key, val|
         filter &= val.present? ?
