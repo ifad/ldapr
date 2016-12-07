@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/ifad/ldap_model.git
-  revision: 129dad535c38bf4ff00c0656ecdac5689273f3d8
+  revision: d9399f72dd72c5c3e8e0f00c4f5c22fc9a8ae44a
   branch: feature/use-without-rails
   specs:
     ldap_model (1.0.0)
