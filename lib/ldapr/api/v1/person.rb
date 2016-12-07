@@ -9,8 +9,7 @@ module LDAPR
           get do
             server_name = params[:server_name]
 
-            person_class(server_name).active
-
+            person_class(server_name).all
           end
         end
       end

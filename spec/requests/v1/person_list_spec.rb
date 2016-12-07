@@ -8,4 +8,12 @@ describe LDAPR::Application do
       expect(response.status).to eq 200
     end
   end
+
+  context "get all external ldap entries" do
+    it "returns a successful response" do
+      get '/v1/persons', server_name: 'external'
+
+      expect(response.status).to eq 200
+    end
+  end
 end
