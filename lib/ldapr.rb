@@ -1,5 +1,6 @@
 module LDAPR
   require 'ldapr/application'
+  require 'ldapr/ldap'
 
   def self.logger=(logger)
     @@logger = logger

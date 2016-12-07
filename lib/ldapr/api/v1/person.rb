@@ -3,12 +3,14 @@ module LDAPR
     module V1
       class Person < Grape::API
         include API::V1::Defaults
-        include LDAPR::LDAP
 
         resource :persons do
           desc "Return a list of ldap entries"
           get do
-            ::IFAD::Person.active
+            server_name = params[:server_name]
+
+            person_class(server_name).active
+
           end
         end
       end
