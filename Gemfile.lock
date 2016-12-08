@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/ifad/ldap_model.git
-  revision: d9399f72dd72c5c3e8e0f00c4f5c22fc9a8ae44a
+  revision: 7de169da62e30c842df029d84fc10a47ba6fd9b5
   branch: feature/use-without-rails
   specs:
     ldap_model (1.0.0)
@@ -76,6 +76,8 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.5.0)
     rspec-support (3.5.0)
+    shotgun (0.9.2)
+      rack (>= 1.0)
     thread_safe (0.3.5)
     tool (0.2.3)
     tzinfo (1.2.2)
@@ -102,6 +104,7 @@ DEPENDENCIES
   rack-test
   rollbar
   rspec
+  shotgun
   unicorn
 
 RUBY VERSION

@@ -14,4 +14,5 @@ group :development do
   gem 'rspec'
   gem 'rack-test'
   gem 'byebug'
+  gem 'shotgun'
 end
