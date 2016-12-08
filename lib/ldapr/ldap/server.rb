@@ -39,6 +39,8 @@ module LDAPR
           LDAP.const_set(person_class_name, klass)
 
           person_class.establish_connection(config)
+          person_class.scope Net::LDAP::SearchScope_WholeSubtree
+          person_class.base config['base']
         end
 
         def add_group_class
@@ -46,6 +48,7 @@ module LDAPR
           LDAP.const_set(group_class_name, klass)
 
           group_class.establish_connection(config)
+
         end
 
         def person_class_name
