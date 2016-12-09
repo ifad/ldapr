@@ -44,4 +44,13 @@ RSpec.configure do |config|
   end
 
   config.raise_errors_for_deprecations!
+
+  # Clean up relics in the test OU.
+  #
+  at_exit do
+    $stderr.print 'Cleaning up LDAP...'
+    ::LDAP::IFAD::Person.all.each(&:destroy)
+    ::LDAP::IFAD::Group.all.each(&:destroy)
+    $stderr.puts ' done.'
+  end
 end
