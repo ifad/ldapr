@@ -7,6 +7,8 @@ module LDAPR
       @@servers ||= establish_ldap_connections
     end
 
+    attr_reader :servers
+
     protected
 
       def self.establish_ldap_connections

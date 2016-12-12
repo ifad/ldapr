@@ -45,6 +45,11 @@ module LDAPR
           %w(type hostname port encryption username password base).each do |param|
             config[param] = ENV[prefix + param.upcase]
           end
+
+          if test? && config['type'] == 'ad'
+            config['base'] = "ou=Test,ou=People," + config['base']
+          end
+
           config
         end
 
