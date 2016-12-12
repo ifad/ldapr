@@ -7,5 +7,11 @@ describe LDAPR::Application do
 
       expect(response.status).to eq 201
     end
+
+    it 'adds and entry to ldap' do
+      expect { post '/v1/ifad/persons' }
+        .to change { LDAPR::LDAP.servers['ifad'].person_class.all.count }
+        .by(1)
+    end
   end
 end
