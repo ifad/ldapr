@@ -40,14 +40,12 @@ module LDAPR
         end
 
         def config
-          prefix = "LDAP_SERVER_#{name.upcase}_"
+          prefix = /^LDAP_SERVER_#{name.upcase}_/
           config = Hash.new
-          %w(type hostname port encryption username password base).each do |param|
-            config[param] = ENV[prefix + param.upcase]
-          end
+          params = ENV.select { |key, _| key.to_s.match(prefix) }
 
-          if test? && config['type'] == 'ad'
-            config['base'] = "ou=Test,ou=People," + config['base']
+          params.each do |param, value|
+            config[param.split(prefix)[1].downcase] = value
           end
 
           config
@@ -56,10 +54,9 @@ module LDAPR
         def add_person_class
           klass = Class.new(::LDAP::Model.const_get(type)::Person)
           server_module.const_set(:Person, klass)
-
+          person_class.base config['base']
           person_class.establish_connection(config)
           person_class.scope Net::LDAP::SearchScope_WholeSubtree
-          person_class.base config['base']
         end
 
         def add_module

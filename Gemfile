@@ -9,7 +9,7 @@ gem 'dotenv'
 gem 'ldap_model', github: 'ifad/ldap_model', branch: 'feature/use-without-rails'
 gem 'activemodel'
 
-group :development do
+group :development, :test do
   gem 'unicorn'
   gem 'rspec'
   gem 'rack-test'

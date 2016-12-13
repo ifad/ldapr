@@ -1,4 +1,5 @@
 require 'dotenv'
 
 # Load environment from .env in development
-Dotenv.load
+files = '.env.test' if test?
+Dotenv.load(files)
