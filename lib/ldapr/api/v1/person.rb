@@ -15,11 +15,18 @@ module LDAPR
         end
 
         route_param :server_name do
-          resource :persons do
+          resource :people do
 
-            desc "Return a list of ldap entries"
+            desc "Get by account name"
+            params do
+              optional :account_name, type: String
+            end
             get do
-              person_class.all
+              if params[:account_name]
+                person_class.find_by_account(params[:account_name]) || error!(:not_found, 404)
+              else
+                person_class.all
+              end
             end
 
             desc 'Create a person on ldap.'
@@ -36,6 +43,7 @@ module LDAPR
 
               person.save!
             end
+
           end
         end
       end

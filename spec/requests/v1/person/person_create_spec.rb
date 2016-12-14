@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 def make_request
-  post("/v1/test/persons")
+  post("/v1/test/people")
 end
 
 describe LDAPR::Application do

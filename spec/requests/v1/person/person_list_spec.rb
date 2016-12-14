@@ -3,7 +3,7 @@ require 'spec_helper'
 describe LDAPR::Application do
   context "get all ldap entries" do
     it "returns a successful response" do
-      get '/v1/test/persons'
+      get '/v1/test/people'
 
       expect(response.status).to eq 200
     end
