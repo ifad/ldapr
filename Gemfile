@@ -4,6 +4,7 @@ ruby '2.3'
 
 gem 'grape'
 gem 'grape_logging'
+gem 'grape-entity'
 gem 'rollbar'
 gem 'dotenv'
 gem 'ldap_model', github: 'ifad/ldap_model', branch: 'feature/use-without-rails'

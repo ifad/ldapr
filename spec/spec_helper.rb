@@ -49,7 +49,7 @@ RSpec.configure do |config|
   #
   at_exit do
     $stderr.print 'Cleaning up LDAP...'
-    LDAPR::LDAP.clean_up_ldap
+    clean_up_ldap
     $stderr.puts ' done.'
   end
 end
