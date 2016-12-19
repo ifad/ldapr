@@ -7,8 +7,7 @@ gem 'grape_logging'
 gem 'grape-entity'
 gem 'rollbar'
 gem 'dotenv'
-gem 'ldap_model', github: 'ifad/ldap_model', branch: 'feature/use-without-rails'
-gem 'activemodel'
+gem 'net-ldap'
 
 group :development, :test do
   gem 'unicorn'

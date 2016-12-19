@@ -1,27 +1,50 @@
 module LDAPR
   module LDAP
-    require 'ldap_model'
-    require_relative 'ldap/server'
-
-    def self.servers
-      @@servers ||= establish_ldap_connections
+    class Error < StandardError
     end
 
-    attr_reader :servers
+    require 'net/ldap'
 
-    protected
+    def self.connection
+      raise Error, "Connection not established" unless connected?
+      @connection
+    end
 
-      def self.establish_ldap_connections
-        servers = Hash.new
-        ldap_server_names.each do |server_name|
-          servers[server_name] = Server.new(server_name)
-        end
-        servers
+    def self.config
+      @config ||= {
+        host:         ENV['LDAP_SERVER_HOSTNAME'],
+        port:         (ENV['LDAP_SERVER_PORT'] || 389).to_i,
+        base:         ENV['LDAP_SERVER_BASE'],
+        encryption:   ENV['LDAP_SERVER_ENCRYPTION'],
+        username:     ENV['LDAP_SERVER_USERNAME'],
+        password:     ENV['LDAP_SERVER_PASSWORD']
+      }
+    end
+
+    def self.establish_connection
+      @connection = Net::LDAP.new(
+        base:       config[:base],
+        host:       config[:host],
+        port:       config[:port],
+        encryption: config[:encryption],
+        auth:       {
+          method:   :simple,
+          username: config[:username],
+          password: config[:password]
+        }
+      )
+
+      unless @connection.bind
+        reason = @connection.get_operation_result.message
+        @connection = nil
+        raise Error, "LDAP bind to #{config[:hostname]} failed: #{reason}"
       end
 
-      def self.ldap_server_names
-        ENV['LDAP_SERVER_NAMES'].split(/,\s/)
-      end
+      true
+    end
 
+    def self.connected?
+      !!@connection
+    end
   end
 end

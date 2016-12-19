@@ -1,2 +1,2 @@
 # Define classes and establish connections for configured ldap servers
-LDAPR::LDAP.servers
+LDAPR::LDAP.establish_connection

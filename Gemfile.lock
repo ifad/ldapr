@@ -1,17 +1,6 @@
-GIT
-  remote: git://github.com/ifad/ldap_model.git
-  revision: 7de169da62e30c842df029d84fc10a47ba6fd9b5
-  branch: feature/use-without-rails
-  specs:
-    ldap_model (1.0.0)
-      activemodel (>= 3.2)
-      net-ldap
-
 GEM
   remote: http://rubygems.org/
   specs:
-    activemodel (5.0.0.1)
-      activesupport (= 5.0.0.1)
     activesupport (5.0.0.1)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (~> 0.7)
@@ -98,13 +87,12 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activemodel
   byebug
   dotenv
   grape
   grape-entity
   grape_logging
-  ldap_model!
+  net-ldap
   rack-test
   rollbar
   rspec

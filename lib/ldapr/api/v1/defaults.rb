@@ -5,7 +5,6 @@ module LDAPR
 
         def self.included(base)
           base.class_eval do
-            require 'ldap_model'
             require 'rollbar'
 
             # common Grape settings

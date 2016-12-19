@@ -9,7 +9,7 @@ require 'ldapr'
 
 require 'byebug'
 
-Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each {|f| require f}
+Dir["#{File.dirname(__FILE__)}/support/*.rb"].each {|f| require f}
 
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
@@ -44,12 +44,4 @@ RSpec.configure do |config|
   end
 
   config.raise_errors_for_deprecations!
-
-  # Clean up relics in the test OU.
-  #
-  at_exit do
-    $stderr.print 'Cleaning up LDAP...'
-    clean_up_ldap
-    $stderr.puts ' done.'
-  end
 end

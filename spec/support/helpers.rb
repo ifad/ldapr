@@ -1,19 +1,34 @@
 module LDAPR
   module Helpers
-    def test_server_name
-      LDAPR::LDAP.ldap_server_names.first
-    end
-
-    def test_server
-      LDAPR::LDAP.servers[test_server_name]
-    end
 
     def clean_up_ldap
-      test_server.person_class.all.each(&:destroy)
+      LDAP.connection.search( :return_result => true).each do |entry|
+        puts "DN: #{entry.dn}"
+        LDAP.connection.delete(dn: entry.dn)
+        byebug
+      end
     end
 
-    def create_person_request(server_name: 'test', account_name: 'test.account', first_name: 'first', last_name: 'last')
-      post("/v1/#{server_name}/people", account_name: account_name, first_name: first_name, last_name: last_name)
+    def create_person_request(account_name: 'test.account')
+      dn = "CN=#{account_name},ou=test,OU=People,DC=ifad,DC=org"
+
+      attributes = {
+        objectClass: ['top', 'person', 'organizationalPerson', 'user'],
+        cn: account_name,
+        sn: 'account',
+        givenName: 'test',
+        displayName: account_name,
+        name: account_name,
+        userAccountControl: 546,
+        employeeID: 'G00680',
+        sAMAccountName: account_name,
+        #sAMAccountType: '805306368',
+        otherMobile: '+393286171666',
+        otherMailbox: "#{account_name}@gmail.com",
+        #userPrincipalName: "#{account_name}s.trochon@ifad.org"
+      }
+
+      post("/v1/ldap/#{dn}", attributes: attributes)
     end
   end
 
