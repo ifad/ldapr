@@ -15,7 +15,6 @@ module LDAPR
 
             desc 'Search for an ldap entry'
             get do
-              require 'byebug'; byebug
               LDAP.connection.search(base: params['dn'], return_result: false) do |entries|
                 present entry, with: API::Presenters::Person
               end
@@ -26,8 +25,8 @@ module LDAPR
               requires :attributes, type: Hash
             end
             post do
-              LDAP.connection.add(dn: params['dn'], attributes: params['attributes'])
-              require 'byebug'; byebug
+              success, message = LDAP.connection.add(dn: params['dn'], attributes: params['attributes'])
+              raise Error, "Create failed: #{message}" unless success
               status 201
             end
 

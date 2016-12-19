@@ -9,7 +9,9 @@ describe LDAPR::Application do
     account_name
   end
 
-  subject(:get_request) { get "/v1/ldap/cn=#{account_name}" }
+  let(:dn) { dn_for_account_name(account_name) }
+
+  subject(:get_request) { get "/v1/ldap/#{dn}" }
 
   context "get an ldap entry" do
     it "returns a successful response" do
