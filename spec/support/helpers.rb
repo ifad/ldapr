@@ -3,7 +3,6 @@ module LDAPR
 
     def clean_up_ldap
       LDAP.connection.search( :return_result => true).each do |entry|
-        puts "DN: #{entry.dn}"
         LDAP.connection.delete(dn: entry.dn)
       end
     end
