@@ -14,10 +14,11 @@ module LDAPR
             desc: 'The ldap Distinguished Name, for example: uid=mreynolds,dc=example,dc=com' do
 
             desc 'Search for an ldap entry'
-            get do
-              LDAP.connection.search(base: params['dn'], return_result: false) do |entries|
-                present entry, with: API::Presenters::Person
-              end
+            get rabl: "entries.rabl" do
+              @entries = LDAP.connection.search(
+                base: params['dn'], return_result: true, scope: Net::LDAP::SearchScope_BaseObject
+              )
+
             end
 
             desc 'Add an ldap entry'

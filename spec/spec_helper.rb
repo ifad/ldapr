@@ -9,6 +9,8 @@ require 'ldapr'
 
 require 'byebug'
 
+require 'airborne'
+
 Dir["#{File.dirname(__FILE__)}/support/*.rb"].each {|f| require f}
 
 RSpec.configure do |config|
@@ -43,5 +45,8 @@ RSpec.configure do |config|
     config.default_formatter = 'doc'
   end
 
+  config.before(:all) do
+    env 'api.tilt.root',  File.expand_path("../../lib/ldapr/api/v1/views", __FILE__)
+  end
   config.raise_errors_for_deprecations!
 end

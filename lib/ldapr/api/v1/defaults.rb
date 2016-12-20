@@ -6,10 +6,13 @@ module LDAPR
         def self.included(base)
           base.class_eval do
             require 'rollbar'
+            require 'grape-rabl'
 
-            # common Grape settings
             version 'v1'
+
             format :json
+
+            formatter :json, Grape::Formatter::Rabl
 
             rescue_from :all do |e|
               LDAPR.logger.error(e)

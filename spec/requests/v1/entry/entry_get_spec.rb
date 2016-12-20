@@ -16,12 +16,20 @@ describe LDAPR::Application do
   context "get an ldap entry" do
     it "returns a successful response" do
       get_request
+
       expect(response.status).to eq 200
+    end
+
+    it "returns one entry" do
+      get_request
+
+      expect_json_sizes(entries: 1)
     end
 
     it "returns the ldap entry" do
       get_request
-      expect(response.body).account_name to eq account_name
+
+      expect_json('entries.0.entry', displayname: account_name)
     end
   end
 end
