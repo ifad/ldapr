@@ -13,12 +13,15 @@ module LDAPR
           route_param :dn, requirements: { dn: /.*/ }, type: String,
             desc: 'The ldap Distinguished Name, for example: uid=mreynolds,dc=example,dc=com' do
 
+            before do
+              params['dn'] = CGI::unescape(params['dn'])
+            end
+
             desc 'Search for an ldap entry'
             get rabl: "entries.rabl" do
               @entries = LDAP.connection.search(
-                base: params['dn'], return_result: true, scope: Net::LDAP::SearchScope_BaseObject
+                base: params['dn'], return_result: true
               )
-
             end
 
             desc 'Add an ldap entry'
@@ -26,8 +29,9 @@ module LDAPR
               requires :attributes, type: Hash
             end
             post do
-              success, message = LDAP.connection.add(dn: params['dn'], attributes: params['attributes'])
-              raise Error, "Create failed: #{message}" unless success
+              result = LDAP.connection.add(dn: params['dn'], attributes: params['attributes'])
+
+              error!("Create failed: #{LDAP.connection.get_operation_result.message}", 422) unless result
               status 201
             end
 
