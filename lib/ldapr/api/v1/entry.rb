@@ -32,8 +32,16 @@ module LDAPR
             end
 
             desc 'Mofidy an entry'
+            params do
+              requires :attributes, type: Hash
+            end
             patch do
+              params['attributes'].each do |name, value|
+                result = LDAP.connection.replace_attribute(params['dn'], name.to_sym, value)
+                error!("Update failed: #{LDAP.connection.get_operation_result.message}", 422) unless result
+              end
 
+              status 200
             end
 
             desc 'Delete an entry'
