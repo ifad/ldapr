@@ -15,18 +15,22 @@ module LDAPR
       dn = dn_for_account_name(account_name)
 
       attributes = {
-        "givenName"=>"first",
-        "sn"=>"last",
-        "displayName"=>account_name,
-        "mail"=>"#{account_name}@ifad.org",
-        "sAMAccountName"=>account_name,
-        "userPrincipalName"=>"#{account_name}@ifad.org",
-        "userAccountControl"=>"544",
-        "objectClass"=>["top", "person", "organizationalPerson", "user"],
-        "cn"=>account_name
+        "givenName":          account_name,
+        "sn":                 "last",
+        "displayName":        account_name,
+        "mail":               "#{account_name}@ifad.org",
+        "sAMAccountName":     account_name,
+        "userPrincipalName":  "#{account_name}@ifad.org",
+        "userAccountControl": "544",
+        "objectClass":        ["top", "person", "organizationalPerson", "user"],
+        "cn":                 account_name,
+        'employeeNumber':     account_name
+
       }
 
-      post("/v1/ldap/#{dn}", attributes: attributes)
+      post("/v1/ldap/#{CGI::escape(dn)}", attributes: attributes)
+
+      response.status
     end
   end
 
