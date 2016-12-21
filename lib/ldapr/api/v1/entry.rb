@@ -37,7 +37,7 @@ module LDAPR
             end
             patch do
               params['attributes'].each do |name, value|
-                result = LDAP.connection.replace_attribute(params['dn'], name.to_sym, value)
+                result = LDAP.connection.replace_attribute(params['dn'], name, value)
                 error!("Update failed: #{LDAP.connection.get_operation_result.message}", 422) unless result
               end
 
