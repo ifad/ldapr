@@ -4,17 +4,32 @@ describe LDAPR::Application do
 
   before(:each) { clean_up_ldap }
 
-  let!(:account_name) do
-    account_name = "test.234"
-    create_person_request(account_name: account_name)
-    account_name
-  end
+  let(:account_name) { "test.234" }
 
   let(:dn) { dn_for_account_name(account_name) }
 
-  subject(:get_request) { get "/v1/ldap/#{CGI::escape(dn)}" }
+  def get_request
+    get "/v1/ldap/#{CGI::escape(dn)}"
+  end
+
+  context "when querying a non existent entry" do
+    it "returns a successful response" do
+      get_request
+
+      expect(response.status).to eq 200
+    end
+
+    it "returns one entry" do
+      get_request
+
+      expect_json_sizes(entries: 0)
+    end
+  end
 
   context "when using a leaf dn" do
+    before(:each) do
+      create_person_request(account_name: account_name)
+    end
 
     it "returns a successful response" do
       get_request
@@ -45,7 +60,7 @@ describe LDAPR::Application do
     let(:dn) { LDAPR::LDAP.connection.base }
 
     before(:each) do
-      (1...9).each do |i|
+      (1...3).each do |i|
         expect(create_person_request(account_name: "test account #{i}")).to eq 201
       end
     end
@@ -54,7 +69,7 @@ describe LDAPR::Application do
       it "returns the whole subtree" do
         get_request
 
-        expect_json_sizes(entries: 10)
+        expect_json_sizes(entries: 3)
       end
     end
   end
