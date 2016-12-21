@@ -10,42 +10,52 @@ describe LDAPR::Application do
 
   let(:original_mail) { "test@test.com" }
 
-  let(:updated_mail) { "updated@test.com" }
+  let(:original_proxy_addresses) { ["address2", "address1"] }
 
-  def get_request
-    get "/v1/ldap/#{CGI::escape(dn)}"
-  end
-
-  def update_request(attributes: {})
-    patch "/v1/ldap/#{CGI::escape(dn)}", attributes: attributes
+  before(:each) do
+    create_request(account_name: account_name, mail: original_mail, proxyAddresses: original_proxy_addresses)
   end
 
   context "when updating an existing entry" do
-    before(:each) do
-      create_person_request(account_name: account_name, mail: original_mail)
-    end
-
-    context "and an existing " do
+    context "and an existing" do
       context "single value attribute" do
+        let(:updated_mail) { "updated@test.com" }
+
         it "returns a successful response" do
-          update_request(attributes: { mail: updated_mail})
+          update_request(dn: dn, attributes: { mail: updated_mail})
 
           expect(response.status).to eq 200
         end
 
         it "updates the attribute value" do
-          get_request
-          expect expect_json('entries.0.entry', mail: original_mail)
+          get_request(dn)
+          expect_json('entries.0.entry', mail: original_mail)
 
-          update_request(attributes: { mail: updated_mail})
+          update_request(dn: dn, attributes: { mail: updated_mail})
 
-          get_request
-          expect expect_json('entries.0.entry', mail: updated_mail)
+          get_request(dn)
+          expect_json('entries.0.entry', mail: updated_mail)
         end
       end
 
       context "multivalue attribute" do
+        let(:updated_proxy_addresses) { ["test", "updated"] }
 
+        it "updates the attribute value" do
+          get_request(dn)
+
+          original_proxy_addresses.each do |address|
+            expect_json('entries.0.entry', proxyaddresses: regex(address))
+          end
+
+          update_request(dn: dn, attributes: { proxyAddresses: updated_proxy_addresses })
+
+          get_request(dn)
+
+          updated_proxy_addresses.each do |address|
+            expect_json('entries.0.entry', proxyaddresses: regex(address))
+          end
+        end
       end
     end
   end
