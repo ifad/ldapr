@@ -4,10 +4,6 @@ module LDAPR
       class Entry < Grape::API
         include API::V1::Defaults
 
-        helpers do
-
-        end
-
         resource :ldap do
 
           route_param :dn, requirements: { dn: /.*/ }, type: String,
@@ -42,7 +38,10 @@ module LDAPR
 
             desc 'Delete an entry'
             delete do
+              result = LDAP.connection.delete(dn: params['dn'])
 
+              error!("Delete failed: #{LDAP.connection.get_operation_result.message}", 422) unless result
+              status 200
             end
           end
         end
