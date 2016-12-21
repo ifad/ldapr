@@ -1,19 +1,53 @@
 module LDAPR
   module Helpers
-    def test_server_name
-      LDAPR::LDAP.ldap_server_names.first
-    end
-
-    def test_server
-      LDAPR::LDAP.servers[test_server_name]
-    end
 
     def clean_up_ldap
-      test_server.person_class.all.each(&:destroy)
+      LDAP.connection.search( :return_result => true).each do |entry|
+        LDAP.connection.delete(dn: entry.dn)
+      end
     end
 
-    def create_person_request(server_name: 'test', account_name: 'test.account', first_name: 'first', last_name: 'last')
-      post("/v1/#{server_name}/people", account_name: account_name, first_name: first_name, last_name: last_name)
+    def dn_for_account_name(account_name)
+      "CN=#{account_name},#{LDAP.connection.base}"
+    end
+
+    def get_request(dn)
+      get "/v1/ldap/#{CGI::escape(dn)}"
+    end
+
+    def update_request(dn: dn, attributes: {})
+      patch "/v1/ldap/#{CGI::escape(dn)}", attributes: attributes
+    end
+
+    def delete_request(dn)
+      delete "/v1/ldap/#{CGI::escape(dn)}"
+    end
+
+    def create_request(
+          account_name: 'test.account',
+          objectClass: ["top", "person", "organizationalPerson", "user"],
+          proxyAddresses: ["address1", "address2"],
+          mail: "#{account_name}@ifad.org")
+
+      dn = dn_for_account_name(account_name)
+
+      attributes = {
+        "givenName":          account_name,
+        "sn":                 "last",
+        "displayName":        account_name,
+        "mail":               mail,
+        "sAMAccountName":     account_name,
+        "userPrincipalName":  "#{account_name}@ifad.org",
+        "userAccountControl": "544",
+        "objectClass":        objectClass,
+        "cn":                 account_name,
+        "employeeNumber":     account_name,
+        "proxyAddresses":     proxyAddresses
+      }
+
+      post("/v1/ldap/#{CGI::escape(dn)}", attributes: attributes)
+
+      response.status
     end
   end
 

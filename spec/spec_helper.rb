@@ -9,7 +9,9 @@ require 'ldapr'
 
 require 'byebug'
 
-Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each {|f| require f}
+require 'airborne'
+
+Dir["#{File.dirname(__FILE__)}/support/*.rb"].each {|f| require f}
 
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
@@ -43,13 +45,8 @@ RSpec.configure do |config|
     config.default_formatter = 'doc'
   end
 
-  config.raise_errors_for_deprecations!
-
-  # Clean up relics in the test OU.
-  #
-  at_exit do
-    $stderr.print 'Cleaning up LDAP...'
-    clean_up_ldap
-    $stderr.puts ' done.'
+  config.before(:all) do
+    env 'api.tilt.root',  File.expand_path("../../lib/ldapr/api/v1/views", __FILE__)
   end
+  config.raise_errors_for_deprecations!
 end

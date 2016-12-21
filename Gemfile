@@ -4,11 +4,11 @@ ruby '2.3'
 
 gem 'grape'
 gem 'grape_logging'
-gem 'grape-entity'
+gem 'grape-rabl'
+gem 'airborne'
 gem 'rollbar'
 gem 'dotenv'
-gem 'ldap_model', github: 'ifad/ldap_model', branch: 'feature/use-without-rails'
-gem 'activemodel'
+gem 'net-ldap'
 
 group :development, :test do
   gem 'unicorn'

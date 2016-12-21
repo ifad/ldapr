@@ -5,7 +5,6 @@ require 'byebug' if development?
 
 module LDAPR
   class Application < Grape::API
-    mount API::V1::Person
-    mount API::V1::Group
+    mount API::V1::Entry
   end
 end
