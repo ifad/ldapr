@@ -14,18 +14,18 @@ describe LDAPR::Application do
     end
 
     it "returns a successful response" do
-      delete_request(dn)
+      delete_request(dn: dn)
 
       expect(response.status).to eq 200
     end
 
     it "removes the entry from ldap" do
-      get_request(dn)
+      get_request(dn: dn)
       expect_json_sizes(entries: 1)
 
-      delete_request(dn)
+      delete_request(dn: dn)
 
-      get_request(dn)
+      get_request(dn: dn)
 
       expect_json_sizes(entries: 0)
     end
@@ -33,7 +33,7 @@ describe LDAPR::Application do
 
   context "when the entry does not exist" do
     it "returns a successful response" do
-      delete_request(dn)
+      delete_request(dn: dn)
 
       expect(response.status).to eq 422
     end

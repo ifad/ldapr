@@ -5,12 +5,17 @@ module LDAPR
         include API::V1::Defaults
 
         resource :ldap do
+          params do
+            requires :username, type: String, desc: "LDAP binding username"
+            requires :password, type: String, desc: "LDAP binding password"
+          end
 
           route_param :dn, requirements: { dn: /.*/ }, type: String,
             desc: 'The ldap Distinguished Name, for example: uid=mreynolds,dc=example,dc=com' do
 
             before do
               params['dn'] = CGI::unescape(params['dn'])
+              LDAP.authenticate(params['username'], params['password'])
             end
 
             desc 'Search for an ldap entry'

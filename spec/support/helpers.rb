@@ -2,6 +2,7 @@ module LDAPR
   module Helpers
 
     def clean_up_ldap
+      LDAP.authenticate(ENV['LDAP_SERVER_USERNAME'], ENV['LDAP_SERVER_PASSWORD'])
       LDAP.connection.search( :return_result => true).each do |entry|
         LDAP.connection.delete(dn: entry.dn)
       end
@@ -11,16 +12,16 @@ module LDAPR
       "CN=#{account_name},#{LDAP.connection.base}"
     end
 
-    def get_request(dn)
-      get "/v1/ldap/#{CGI::escape(dn)}"
+    def get_request(dn:, username: ENV['LDAP_SERVER_USERNAME'], password: ENV['LDAP_SERVER_PASSWORD'])
+      get("/v1/ldap/#{CGI::escape(dn)}", username: username, password: password)
     end
 
-    def update_request(dn: dn, attributes: {})
-      patch "/v1/ldap/#{CGI::escape(dn)}", attributes: attributes
+    def update_request(dn: dn, attributes: {}, username: ENV['LDAP_SERVER_USERNAME'], password: ENV['LDAP_SERVER_PASSWORD'])
+      patch("/v1/ldap/#{CGI::escape(dn)}", attributes: attributes, username: username, password: password)
     end
 
-    def delete_request(dn)
-      delete "/v1/ldap/#{CGI::escape(dn)}"
+    def delete_request(dn: dn, username: ENV['LDAP_SERVER_USERNAME'], password: ENV['LDAP_SERVER_PASSWORD'])
+      delete("/v1/ldap/#{CGI::escape(dn)}", username: username, password: password)
     end
 
     def create_request(
@@ -45,7 +46,7 @@ module LDAPR
         "proxyAddresses":     proxyAddresses
       }
 
-      post("/v1/ldap/#{CGI::escape(dn)}", attributes: attributes)
+      post("/v1/ldap/#{CGI::escape(dn)}", attributes: attributes, username: ENV['LDAP_SERVER_USERNAME'], password: ENV['LDAP_SERVER_PASSWORD'])
 
       response.status
     end

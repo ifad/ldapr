@@ -28,12 +28,12 @@ describe LDAPR::Application do
         end
 
         it "updates the attribute value" do
-          get_request(dn)
+          get_request(dn: dn)
           expect_json('entries.0.entry', mail: original_mail)
 
           update_request(dn: dn, attributes: { mail: updated_mail})
 
-          get_request(dn)
+          get_request(dn: dn)
           expect_json('entries.0.entry', mail: updated_mail)
         end
       end
@@ -42,7 +42,7 @@ describe LDAPR::Application do
         let(:updated_proxy_addresses) { ["test", "updated"] }
 
         it "updates the attribute value" do
-          get_request(dn)
+          get_request(dn: dn)
 
           original_proxy_addresses.each do |address|
             expect_json('entries.0.entry', proxyaddresses: regex(address))
@@ -50,7 +50,7 @@ describe LDAPR::Application do
 
           update_request(dn: dn, attributes: { proxyAddresses: updated_proxy_addresses })
 
-          get_request(dn)
+          get_request(dn: dn)
 
           updated_proxy_addresses.each do |address|
             expect_json('entries.0.entry', proxyaddresses: regex(address))

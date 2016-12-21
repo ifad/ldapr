@@ -10,13 +10,13 @@ describe LDAPR::Application do
 
   context "when querying a non existent entry" do
     it "returns a successful response" do
-      get_request(dn)
+      get_request(dn: dn)
 
       expect(response.status).to eq 200
     end
 
     it "returns one entry" do
-      get_request(dn)
+      get_request(dn: dn)
 
       expect_json_sizes(entries: 0)
     end
@@ -28,25 +28,25 @@ describe LDAPR::Application do
     end
 
     it "returns a successful response" do
-      get_request(dn)
+      get_request(dn: dn)
 
       expect(response.status).to eq 200
     end
 
     it "returns one entry" do
-      get_request(dn)
+      get_request(dn: dn)
 
       expect_json_sizes(entries: 1)
     end
 
     it "returns the ldap entry with account_name as display name" do
-      get_request(dn)
+      get_request(dn: dn)
 
       expect_json('entries.0.entry', displayname: account_name)
     end
 
     it "concatenates multivalue attributes separated by comma" do
-      get_request(dn)
+      get_request(dn: dn)
 
       expect_json('entries.0.entry', objectclass: "top, person, organizationalPerson, user")
     end
@@ -63,7 +63,7 @@ describe LDAPR::Application do
 
     context  "without specifying the scope" do
       it "returns the whole subtree" do
-        get_request(dn)
+        get_request(dn: dn)
 
         expect_json_sizes(entries: 3)
       end
