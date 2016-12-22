@@ -10,10 +10,14 @@ module LDAPR
     end
 
     def self.authenticate(username, password)
-      unless connection.authenticate(username, password)
+      connection.authenticate(username, password)
+
+      unless connection.bind
         reason = connection.get_operation_result.message
-        raise Error, "LDAP bind to #{config[:hostname]} failed: #{reason}"
+        return [false, reason]
       end
+
+      [true, nil]
     end
 
     private

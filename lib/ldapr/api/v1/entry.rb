@@ -15,7 +15,11 @@ module LDAPR
 
             before do
               params['dn'] = CGI::unescape(params['dn'])
-              LDAP.authenticate(params['username'], params['password'])
+
+              result, message = LDAP.authenticate(params['username'], params['password'])
+              unless result
+                error!("LDAP bind to failed: #{message}", 401)
+              end
             end
 
             desc 'Search for an ldap entry'
