@@ -16,11 +16,11 @@ module LDAPR
       get("/v1/ldap/#{CGI::escape(dn)}", username: username, password: password)
     end
 
-    def update_request(dn: dn, attributes: {}, username: ENV['LDAP_SERVER_USERNAME'], password: ENV['LDAP_SERVER_PASSWORD'])
+    def update_request(dn:, attributes: {}, username: ENV['LDAP_SERVER_USERNAME'], password: ENV['LDAP_SERVER_PASSWORD'])
       patch("/v1/ldap/#{CGI::escape(dn)}", attributes: attributes, username: username, password: password)
     end
 
-    def delete_request(dn: dn, username: ENV['LDAP_SERVER_USERNAME'], password: ENV['LDAP_SERVER_PASSWORD'])
+    def delete_request(dn:, username: ENV['LDAP_SERVER_USERNAME'], password: ENV['LDAP_SERVER_PASSWORD'])
       delete("/v1/ldap/#{CGI::escape(dn)}", username: username, password: password)
     end
 
