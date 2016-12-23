@@ -8,10 +8,10 @@ module LDAPR
           params do
             requires :username, type: String, desc: "LDAP binding username"
             requires :password, type: String, desc: "LDAP binding password"
+            requires :dn, type: String, desc: "LDAP entry Distinguished Name", documentation: { default: "uid=test,dc=example,dc=com" }
           end
 
-          route_param :dn, requirements: { dn: /.*/ }, type: String,
-            desc: 'The ldap Distinguished Name, for example: uid=mreynolds,dc=example,dc=com' do
+          route_param :dn, requirements: { dn: /.*/ } do
 
             before do
               params['dn'] = CGI::unescape(params['dn'])
