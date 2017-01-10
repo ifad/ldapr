@@ -4,7 +4,7 @@ module LDAPR
       class Entry < Grape::API
         include API::V1::Defaults
 
-        resource :ldap do
+        resource :entries do
           params do
             requires :username, type: String, desc: "LDAP binding username"
             requires :password, type: String, desc: "LDAP binding password"
@@ -18,7 +18,7 @@ module LDAPR
 
               result, message = LDAP.authenticate(params['username'], params['password'])
               unless result
-                error!("LDAP bind to failed: #{message}", 401)
+                error!("LDAP authentication failed: #{message}", 401)
               end
             end
 
