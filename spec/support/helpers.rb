@@ -29,11 +29,17 @@ module LDAPR
       delete(entry_url(dn), username: username, password: password)
     end
 
+    def thumbnaildata
+      Base64.encode64(File.read("#{File.dirname(__FILE__)}/thumbnail.png"))
+    end
+
     def create_request(
           account_name: 'test.account',
           objectClass: ["top", "person", "organizationalPerson", "user"],
           proxyAddresses: ["address1", "address2"],
-          mail: "#{account_name}@ifad.org")
+          mail: "#{account_name}@ifad.org",
+          username: ENV['LDAP_SERVER_USERNAME'],
+          password: ENV['LDAP_SERVER_PASSWORD'])
 
       dn = dn_for_account_name(account_name)
 
@@ -48,10 +54,11 @@ module LDAPR
         "objectClass":        objectClass,
         "cn":                 account_name,
         "employeeNumber":     account_name,
-        "proxyAddresses":     proxyAddresses
+        "proxyAddresses":     proxyAddresses,
+        "thumbnailPhoto":     thumbnaildata
       }
 
-      post(entry_url(dn), attributes: attributes, username: ENV['LDAP_SERVER_USERNAME'], password: ENV['LDAP_SERVER_PASSWORD'])
+      post(entry_url(dn), attributes: attributes, username: username , password: password)
 
       response.status
     end
