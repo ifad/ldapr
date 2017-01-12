@@ -15,7 +15,7 @@ describe LDAPR::Application do
       expect(response.status).to eq 200
     end
 
-    it "returns one entry" do
+    it "returns no entry" do
       get_request(dn: dn)
 
       expect_json_sizes(entries: 0)

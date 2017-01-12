@@ -40,7 +40,26 @@ module LDAPR
               status 201
             end
 
-            desc 'Mofidy an entry'
+            desc 'Update or create an entry, assuming nil for non given attributes'
+            params do
+              requires :attributes, type: Hash
+            end
+            put do
+              entry = LDAP.connection.search(base: params[:dn], return_result: true, scope: Net::LDAP::SearchScope_BaseObject)
+              if entry
+                ops = params['attributes'].map do |name, value|
+                  [:replace, name, value]
+                end
+                LDAP.connection.modify(dn: params[:dn], operations: ops)
+              else
+                result = LDAP.connection.add(dn: params['dn'], attributes: params['attributes'])
+
+                error!("Create failed: #{LDAP.connection.get_operation_result.message}", 422) unless result
+                status 201
+              end
+            end
+
+            desc 'Mofidy an entry, updating only the attributes included in the request'
             params do
               requires :attributes, type: Hash
             end

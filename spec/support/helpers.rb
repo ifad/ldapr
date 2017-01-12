@@ -21,7 +21,12 @@ module LDAPR
       get(entry_url(dn), username: username, password: password)
     end
 
-    def update_request(dn:, attributes: {}, username: ENV['LDAP_SERVER_USERNAME'], password: ENV['LDAP_SERVER_PASSWORD'])
+    def put_request(dn:, attributes: {}, username: ENV['LDAP_SERVER_USERNAME'], password: ENV['LDAP_SERVER_PASSWORD'])
+      put(entry_url(dn), attributes: attributes, username: username, password: password)
+    end
+
+
+    def patch_request(dn:, attributes: {}, username: ENV['LDAP_SERVER_USERNAME'], password: ENV['LDAP_SERVER_PASSWORD'])
       patch(entry_url(dn), attributes: attributes, username: username, password: password)
     end
 
