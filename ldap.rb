@@ -76,6 +76,8 @@ module LDAP
       otherMobile
       division
       employeeType
+      employeeId
+      employeeNumber
     ).freeze
 
     ATTRIBUTES = UTF8_ATTRIBUTES + %w(
