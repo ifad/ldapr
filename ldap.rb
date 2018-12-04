@@ -78,6 +78,7 @@ module LDAP
       employeeType
       employeeId
       employeeNumber
+      locked_out_at
     ).freeze
 
     ATTRIBUTES = UTF8_ATTRIBUTES + %w(
@@ -102,7 +103,7 @@ module LDAP
     end
 
     def self.export_attributes
-      @export_attributes ||= attributes + %w(active? extension expiration)
+      @export_attributes ||= attributes + %w(active? locked_out? extension expiration)
     end
 
 
@@ -179,6 +180,16 @@ module LDAP
 
     def expiration
       LDAP.at(self['accountExpires'])
+    end
+
+    def locked_out_at
+      return if self['lockoutTime'].nil? || self['lockoutTime'] == '0' # Not Locked Out
+
+      LDAP.at(self['lockoutTime'])
+    end
+
+    def locked_out?
+      !locked_out_at.nil?
     end
 
     def [](name)
