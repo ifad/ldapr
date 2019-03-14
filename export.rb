@@ -18,7 +18,6 @@ class Export
   alias :js :json
 
   def csv
-
     data = CSV.generate :encoding => 'utf-8' do |csv|
       csv << self.class.tabular_attributes
 

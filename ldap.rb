@@ -79,6 +79,8 @@ module LDAP
       employeeId
       employeeNumber
       lockoutTime
+      whenCreated
+      whenChanged
     ).freeze
 
     ATTRIBUTES = UTF8_ATTRIBUTES + %w(
@@ -103,7 +105,8 @@ module LDAP
     end
 
     def self.export_attributes
-      @export_attributes ||= attributes + %w(active? locked_out_at locked_out? extension expiration)
+      @export_attributes ||= attributes +
+        %w(active? created_at updated_at locked_out_at locked_out? extension expiration)
     end
 
 
@@ -172,6 +175,14 @@ module LDAP
     def extension
       # Extract the extension from the given full number
       self['telephoneNumber'].gsub(self.class.phone_prefix, '')
+    end
+
+    def created_at
+      Time.parse(self['whenCreated'])
+    end
+
+    def updated_at
+      Time.parse(self['whenChanged'])
     end
 
     def active?
