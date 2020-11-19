@@ -31,7 +31,11 @@ module LDAP
   AD_EPOCH_OFFSET = 11644477200
 
   def self.now
-    (Time.now.to_i + AD_EPOCH_OFFSET) * 10_000_000
+    to_ad_ts(Time.now)
+  end
+
+  def self.to_ad_ts(timestamp)
+    (timestamp.to_i + AD_EPOCH_OFFSET) * 10_000_000
   end
 
   def self.at(timestamp)
