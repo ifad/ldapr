@@ -1,5 +1,9 @@
 require 'active_support'
 require 'active_support/core_ext'
+require 'active_support/json'
+
+require 'net/ldap'
+require 'yaml'
 
 module LDAP
   def self.connection_spec

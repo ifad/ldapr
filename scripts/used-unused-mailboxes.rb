@@ -1,9 +1,7 @@
 #!/usr/bin/env ruby
 
-require 'net/ldap'
 require '../ldap'
 require 'httparty'
-require 'active_support/json'
 require 'csv'
 
 USER_ACTIVE_DAYS = ENV.fetch('USER_ACTIVE_DAYS', 0).to_i

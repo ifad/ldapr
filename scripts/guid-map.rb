@@ -1,8 +1,6 @@
 #!/usr/bin/env ruby
 
-require 'net/ldap'
 require '../ldap'
-require 'yaml'
 
 filter  = Net::LDAP::Filter.eq('objectClass', 'person')
 filter &= Net::LDAP::Filter.eq('objectClass', 'organizationalPerson')
