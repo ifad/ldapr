@@ -199,6 +199,10 @@ module LDAP
       LDAP.at(self['accountExpires'])
     end
 
+    def account_name
+      self['sAMAccountName']
+    end
+
     def guid
       b = self['objectGUID'].unpack('C*')
 
