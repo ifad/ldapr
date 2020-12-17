@@ -1,12 +1,12 @@
 source 'https://rubygems.org'
 
-ruby '2.1.10'
+ruby '2.6.6'
 
 gem 'sinatra'
 gem 'omniauth'
 gem 'omniauth-cas'
 gem 'net-ldap'
-gem 'activesupport', '~> 3.0'
+gem 'activesupport'
 gem 'i18n', :require => false
 
 group :development do
