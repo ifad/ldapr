@@ -5,7 +5,7 @@ module LDAP
     Hash[
       host:       config['hostname'],
       port:       config['port'],
-      encryption: nil,
+      encryption: config['encryption'],
       auth:       {
         method:   :simple,
         username: config['username'],
