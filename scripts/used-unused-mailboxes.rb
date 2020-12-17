@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 
-require '../ldap'
 require 'httparty'
 require 'csv'
+require_relative '../ldap'
 
 USER_ACTIVE_DAYS = ENV.fetch('USER_ACTIVE_DAYS', 0).to_i
 MAILBOX_USED_DAYS = ENV.fetch('MAILBOX_USED_DAYS', 30).to_i

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require '../ldap'
+require_relative '../ldap'
 
 filter  = Net::LDAP::Filter.eq('objectClass', 'person')
 filter &= Net::LDAP::Filter.eq('objectClass', 'organizationalPerson')
