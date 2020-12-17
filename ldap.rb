@@ -23,8 +23,12 @@ module LDAP
     ENV['RACK_ENV'] || 'development'
   end
 
+  def self.config_file
+    File.realpath(File.dirname(__FILE__) + '/config/ldap.yml')
+  end
+
   def self.config
-    @@config ||= YAML.load_file('config/ldap.yml').fetch(environment)
+    @@config ||= YAML.load_file(config_file).fetch(environment)
   end
 
   def self.connection
