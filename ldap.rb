@@ -85,6 +85,7 @@ module LDAP
       lockoutTime
       whenCreated
       whenChanged
+      objectGUID
     ).freeze
 
     ATTRIBUTES = UTF8_ATTRIBUTES + %w(
@@ -110,7 +111,7 @@ module LDAP
 
     def self.export_attributes
       @export_attributes ||= attributes +
-        %w(active? created_at updated_at locked_out_at locked_out? extension expiration)
+        %w(active? created_at updated_at locked_out_at locked_out? extension expiration guid)
     end
 
 
@@ -195,6 +196,14 @@ module LDAP
 
     def expiration
       LDAP.at(self['accountExpires'])
+    end
+
+    def guid
+      d = Base64.decode64(self['objectGUID']).unpack('C*')
+      guid_bytes = [d[3], d[2], d[1], d[0], d[5], d[4], d[7], d[6], d[8], d[9], *d[10..15]]
+      guid_fmt = ['%02x'*4, '%02x'*2, '%02x'*2, '%02x'*2, '%02x'*6].join('-')
+
+      (guid_fmt % guid_bytes).upcase
     end
 
     def locked_out_at
