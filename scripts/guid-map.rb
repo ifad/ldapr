@@ -15,9 +15,6 @@ people = LDAP.connection.search(
   scope:  Net::LDAP::SearchScope_WholeSubtree
 ).map {|entry| LDAP::Person.new(entry) }
 
-puts '---'
-puts
-
 people.each do |person|
   puts [person.guid, person.account_name].join(': ')
 end
