@@ -85,10 +85,10 @@ module LDAP
       lockoutTime
       whenCreated
       whenChanged
-      objectGUID
     ).freeze
 
     ATTRIBUTES = UTF8_ATTRIBUTES + %w(
+      objectGUID
       thumbnailPhoto
       memberOf
     ).freeze
@@ -110,8 +110,9 @@ module LDAP
     end
 
     def self.export_attributes
-      @export_attributes ||= attributes +
-        %w(active? created_at updated_at locked_out_at locked_out? extension expiration guid)
+      @export_attributes ||= attributes \
+        - %w( objectGUID ) \
+        + %w(active? created_at updated_at locked_out_at locked_out? extension expiration guid)
     end
 
 
@@ -199,8 +200,11 @@ module LDAP
     end
 
     def guid
-      d = Base64.decode64(self['objectGUID']).unpack('C*')
-      guid_bytes = [d[3], d[2], d[1], d[0], d[5], d[4], d[7], d[6], d[8], d[9], *d[10..15]]
+      b = self['objectGUID'].unpack('C*')
+
+      return unless b.size == 16
+
+      guid_bytes = [b[3], b[2], b[1], b[0], b[5], b[4], b[7], b[6], b[8], b[9], *b[10..15]]
       guid_fmt = ['%02x'*4, '%02x'*2, '%02x'*2, '%02x'*2, '%02x'*6].join('-')
 
       (guid_fmt % guid_bytes).upcase
