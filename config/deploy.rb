@@ -1,60 +1,47 @@
-# =========================================================================
-# Global Settings
-# =========================================================================
+# frozen_string_literal: true
 
-set :application, 'ldapr'
+# config valid for current version and patch releases of Capistrano
+lock '~> 3.16.0'
 
-require 'infrad'
+# Default Capistrano branch is master
+# Deploy to another branch by using `BRANCH=develop cap stage deploy`
+set :branch, ENV['BRANCH'] || ENV['BRANCH_NAME'] || fetch(:branch)
+set :ssh_options, { :forward_agent => true }
 
-Infrad.deploy(self, app: application)
+set(:rails_env) { fetch(:stage).to_s.gsub(/_new$/, '').to_sym }
 
-set(:rails_env) { stage }
-
-# =========================================================================
-# Dependencies
-# =========================================================================
-depend :remote, :command, 'gem'
-depend :remote, :command, 'git'
-
-def compile(template)
-  location = fetch(:template_dir, File.expand_path('../deploy', __FILE__)) + "/#{template}"
-  config   = ERB.new File.read(location)
-  config.result(binding)
+%w[log tmp/pids vendor/bundle].each do |linked_dir|
+  append :linked_dirs, linked_dir
 end
+
+['config/ldap.yml'].each do |linked_file|
+  append :linked_files, linked_file
+end
+
+# Default value for keep_releases is 5
+# set :keep_releases, 5
+
+set :bundle_config, { deployment: true, force_ruby_platform: true }
 
 namespace :deploy do
-
-  namespace :ifad do
-    desc '[internal] Symlink ruby version'
-    task :symlink_ruby_version, :except => { :no_release => true } do
-      run "ln -s #{deploy_to}/.ruby-version #{release_path}"
-    end
-    after 'deploy:update_code', 'deploy:ifad:symlink_ruby_version'
-  end
-
-  desc 'Restarts the application.'
+  desc 'Restart application'
   task :restart do
-    pid = "#{deploy_to}/.unicorn.pid"
-    run "test -f #{pid} && kill -USR2 `cat #{pid}` || true"
+    on roles(:web) do
+      execute 'sudo systemctl restart ldapr-unicorn'
+    end
   end
-
-  desc "[internal] Updates the symlink for database configuration files to the just deployed release."
-  task :symlink_config do
-    configs = %w( ldap.yml ).map {|c| [shared_path, 'config', c].join('/') }
-    run "ln -s #{configs.join(' ')} #{release_path}/config"
-  end
-
-  task :setup_config do
-    run "mkdir -p #{shared_path}/{db,config}"
-    put compile('ldap.yml.erb'),     "#{shared_path}/config/ldap.yml"
-  end
-
 end
 
-after 'deploy', 'deploy:cleanup'
-after 'deploy:setup', 'deploy:setup_config'
-after 'deploy:update_code', 'deploy:symlink_config'
+set :rollbar_token, ''
+set :rollbar_env, -> { fetch :stage }
+set :rollbar_role, -> { :app }
 
-require 'bundler/capistrano'
-set :bundle_flags, "--deployment --quiet --binstubs #{deploy_to}/bin"
-set :rake,         'bundle exec rake'
+set :assets_roles, %i[app web]
+set :skip_migrations, false
+
+after 'deploy', 'deploy:cleanup'
+after 'deploy', 'deploy:restart'
+
+set :bundle_flags, "--deployment --quiet --binstubs --path vendor/bundle"
+set :rake,         "bundle exec rake"
+

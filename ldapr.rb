@@ -62,6 +62,10 @@ get "#{ROOT}/cas/callback" do
   redirect session.delete(:req) || ROOT
 end
 
+get "#{ROOT}/sys/healthcheck" do
+  'OK'
+end
+
 get "#{ROOT}/logout" do
   session[:user] = nil
 end

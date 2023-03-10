@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '2.6.6'
+ruby '2.6.10'
 
 gem 'sinatra'
 gem 'omniauth'
@@ -10,9 +10,14 @@ gem 'activesupport'
 gem 'i18n', :require => false
 
 group :development do
-  gem 'infrad', git: 'git@code.ifad.org:infrad.git'
   gem 'byebug'
-  gem 'capistrano', '~> 2.15.9'
+  gem 'infrad', git: 'git@github.com:ifad/infrad.git'
+  gem 'capistrano', '~> 3.16.0', require: false
+  gem 'capistrano-bundler', '~> 2.1.0', require: false
+
+  gem 'net-ssh', '>= 5'
+  gem 'ed25519'
+  gem 'bcrypt_pbkdf'
 end
 
 group :staging, :production do
