@@ -12,7 +12,7 @@ Bundler.require
 require './export'
 require './ldap'
 
-ROOT = ENV['RAILS_RELATIVE_URL_ROOT'] || '/l'
+ROOT = (ENV['RAILS_RELATIVE_URL_ROOT'] || '/l').sub(%r{/+$}, '')
 
 use Rack::Session::Cookie, :expire_after => 300,
   :key => '_ldapr', :secret => '874fmajr39jf&*H#jfb1!@'
@@ -22,7 +22,7 @@ use OmniAuth::Builder do
   configure {|c| c.path_prefix = ROOT}
 end
 
-get "#{ROOT}.?:format?" do
+get "#{ROOT == '' ? '/' : ROOT}.?:format?" do
   if session[:user].blank?
     if request.query_string.present?
       session[:req] = request.fullpath

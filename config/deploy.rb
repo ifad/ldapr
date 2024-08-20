@@ -8,7 +8,8 @@ require 'infrad'
 
 Infrad.deploy(self, app: application)
 
-set(:rails_env) { stage }
+set(:rails_env) { fetch(:stage).to_s.sub('_new', '') }
+set :branch, ENV['BRANCH'] || ENV['BRANCH_NAME'] || fetch(:branch)
 
 # =========================================================================
 # Dependencies
@@ -34,8 +35,7 @@ namespace :deploy do
 
   desc 'Restarts the application.'
   task :restart do
-    pid = "#{deploy_to}/.unicorn.pid"
-    run "test -f #{pid} && kill -USR2 `cat #{pid}` || true"
+    run 'sudo systemctl restart ldapr-unicorn'
   end
 
   desc "[internal] Updates the symlink for database configuration files to the just deployed release."
@@ -43,12 +43,6 @@ namespace :deploy do
     configs = %w( ldap.yml ).map {|c| [shared_path, 'config', c].join('/') }
     run "ln -s #{configs.join(' ')} #{release_path}/config"
   end
-
-  task :setup_config do
-    run "mkdir -p #{shared_path}/{db,config}"
-    put compile('ldap.yml.erb'),     "#{shared_path}/config/ldap.yml"
-  end
-
 end
 
 after 'deploy', 'deploy:cleanup'
